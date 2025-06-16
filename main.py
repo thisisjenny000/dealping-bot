@@ -4,7 +4,7 @@ from flask import Flask
 from threading import Thread
 
 app = Flask(__name__)
-#1
+#12
 # Discord-Webhooks aus Umgebungsvariablen
 WEBHOOKS = {
     "unter15": os.environ.get("WEBHOOK_UNTER15"),
