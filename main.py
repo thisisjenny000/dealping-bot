@@ -32,7 +32,8 @@ LAST_FILES = {
 def fetch_deals():
     url = "https://www.cheapshark.com/api/1.0/deals?sortBy=Deal%20Rating&pageSize=20"
     try:
-        res = requests.get(url)
+        headers = {"User-Agent": "Mozilla/5.0 (compatible; DealPingBot/1.0)"}
+        res = requests.get(url, headers=headers)
         res.raise_for_status()
         return res.json()
     except Exception as e:
