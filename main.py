@@ -5,6 +5,7 @@ from threading import Thread
 
 app = Flask(__name__)
 
+# Discord-Webhooks aus Umgebungsvariablen
 WEBHOOKS = {
     "unter15": os.environ.get("WEBHOOK_UNTER15"),
     "all": os.environ.get("WEBHOOK_ALL"),
@@ -12,6 +13,7 @@ WEBHOOKS = {
     "epic": os.environ.get("WEBHOOK_EPIC"),
 }
 
+# Filter-Regeln für jede Kategorie
 FILTERS = {
     "unter15": lambda g: g["storeID"] == "1" and float(g["salePrice"]) < 15,
     "all": lambda g: g["storeID"] == "1",
@@ -19,6 +21,7 @@ FILTERS = {
     "epic": lambda g: g["storeID"] == "25" and float(g["savings"]) >= 40,
 }
 
+# Dateinamen für gespeicherte Deal-Titel
 LAST_FILES = {
     "unter15": "last_unter15.txt",
     "all": "last_all.txt",
@@ -27,7 +30,7 @@ LAST_FILES = {
 }
 
 def fetch_deals():
-    url = "https://www.cheapshark.com/api/1.0/deals?storeID=1&sortBy=Deal%20Rating&pageSize=20"
+    url = "https://www.cheapshark.com/api/1.0/deals?sortBy=Deal%20Rating&pageSize=20"
     try:
         res = requests.get(url)
         res.raise_for_status()
@@ -42,9 +45,12 @@ def format_deals(deals):
         title = g["title"]
         price = g["salePrice"]
         normal = g["normalPrice"]
-        appid = g.get("steamAppID") or "0"
-        link = g["storeID"] == "1" and f"https://store.steampowered.com/app/{appid}" or g["dealID"]
-        url = f"https://store.steampowered.com/app/{appid}" if appid != "0" else f"https://www.cheapshark.com/redirect?dealID={link}"
+        store = g["storeID"]
+        appid = g.get("steamAppID")
+        if store == "1" and appid:  # Steam
+            url = f"https://store.steampowered.com/app/{appid}"
+        else:
+            url = f"https://www.cheapshark.com/redirect?dealID={g['dealID']}"
         text += f"**{title}** – {price} € (statt {normal} €)\n{url}\n\n"
     return text
 
@@ -75,7 +81,7 @@ def process_category(name):
 
 @app.route('/')
 def home():
-    return "Bot läuft!"
+    return "DealPing-Bot läuft!"
 
 def run_bot():
     for name in WEBHOOKS:
@@ -85,3 +91,4 @@ def run_bot():
 if __name__ == "__main__":
     Thread(target=lambda: app.run(host='0.0.0.0', port=8000)).start()
     run_bot()
+
