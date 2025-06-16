@@ -32,7 +32,7 @@ LAST_FILES = {
 def fetch_deals():
     url = "https://www.cheapshark.com/api/1.0/deals?sortBy=Deal%20Rating&pageSize=20"
     headers = {
-        "User-Agent": "Mozilla/5.0 (compatible; DealPingBot/1.0)"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) DealPingBot/1.0"
     }
     try:
         res = requests.get(url, headers=headers)
