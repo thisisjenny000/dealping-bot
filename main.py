@@ -32,7 +32,7 @@ LAST_FILES = {
 def fetch_deals():
     url = "https://www.cheapshark.com/api/1.0/deals?sortBy=Deal%20Rating&pageSize=20"
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) DealPingBot/1.0"
+        "User-Agent": "Mozilla/5.0 (compatible; DealPingBot/1.0; +https://github.com/thisisjenny000/dealping-bot)"
     }
     try:
         res = requests.get(url, headers=headers)
@@ -41,6 +41,7 @@ def fetch_deals():
     except Exception as e:
         print("❌ Fehler beim Laden der Deals:", e)
         return []
+
 
 def format_deals(deals):
     text = ""
